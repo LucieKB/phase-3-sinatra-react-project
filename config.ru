@@ -12,4 +12,8 @@ end
 use Rack::JSONBodyParser
 
 # Our application
+use GoalsController
+use StudentsController
 run ApplicationController
+
+#run ApplicationController starts the whole app, and patterns matches to find out which route to fetch from which controller

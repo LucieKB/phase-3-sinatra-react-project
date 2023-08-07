@@ -1,5 +1,3 @@
-# require 'faker'
-
 puts "🌱 Seeding spices..."
 
 Student.create([
@@ -22,8 +20,12 @@ Student.create([
         first_name: "Gabriel",
         last_name: "Chérifi Kayser",
         grade: 2
-    }
-   
+    },
+    {
+        first_name: "Pepito",
+        last_name: "Mikorasso",
+        grade: 10
+    }  
 ])
 
 goal_categories = ["Behavior", "Academic", "Social", "Other"]
