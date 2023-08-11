@@ -23,6 +23,7 @@ class GoalsController < ApplicationController
         goal.to_json
     end
 
+
     patch '/goals/:id' do
         goal = Goal.find_by(id: params[:id])
         goal.update(

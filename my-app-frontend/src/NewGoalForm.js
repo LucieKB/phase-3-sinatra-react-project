@@ -1,9 +1,9 @@
 import React, {useState} from "react";
+import "./NewGoalForm.css"
+import { useNavigate } from "react-router-dom";
 
 
-function NewGoalForm({onAddNewGoal, student, id}){
-    const [isDisabled, setIsDisabled] = useState(false)
-    const [checked, setIsChecked] = useState(false)
+function NewGoalForm({onAddNewGoal, id, student, setShowForm, showForm}){
     
     const [formData, setFormData]=useState({
         category : (""),
@@ -12,85 +12,106 @@ function NewGoalForm({onAddNewGoal, student, id}){
         achieved: (false),
       })
 
-console.log(student)
-
     const categories = ["Ready", "Respectful", "Responsible", "Academic", "Other"]
+    const navigate = useNavigate()
 
-    function handleChangeCategory(e){
-        if(e.target.checked){
-            setIsChecked(checked => !checked)
-            setFormData({...formData, category:e.target.value})
-        }
-        setIsDisabled(true);
+    const handleChangeCategory = (e) => {
+        if(e.target.checked)
+            {  
+                setFormData({...formData, category:e.target.value})
+            }
     }
+    
 
-    function handleSubmit(e){
+    const handleSubmit = (e) => {
         e.preventDefault()
         setFormData({...formData})
-    
-        fetch ("http://localhost:9292/goals",{
-            method:"POST",
-            headers:{
+        console.log("submitted")
+        console.log(id)
+        console.log(formData)
+        fetch ("http://localhost:9292/goals", {
+            method: "POST",
+            headers: {
              "Content-Type": "application/json", 
-             },
-             body: JSON.stringify(
-                 {category: formData.category,
+            },
+            body: JSON.stringify({
+                 category: formData.category,
                  description: formData.description,
                  deadline: formData.deadline,
                  achieved: formData.achieved,
-                 student_id: id}
-                 )
+                 student_id: id
+            }),
         })
-        .then(r=>r.json())
-        .then (newGoal=>onAddNewGoal(newGoal));
-
-
-        setFormData({
-            category : (""),
-            description : (""),
-            deadline : (""),
-            achieved: (false),
-        });
+            .then(r=>r.json())
+            .then ((newGoal) => {
+                onAddNewGoal(newGoal);
+                
+                setFormData({
+                    category : (""),
+                    description : (""),
+                    deadline : (""),
+                    achieved: (false)
+                });
+            });
+            setShowForm((showForm) => !showForm)
+            navigate(`/students/${student.id}`);
     }
 
+    
+    return (
 
+        <div>
+        
+            <div className="Header2">
+                <h2> {student.first_name}'s New Goal !</h2>
+            </div>
+            <hr />
 
-    return(
-        <form onSubmit={handleSubmit}>
+        <form className="new-goal-form" onSubmit={handleSubmit}>
             <ul className = "category-list">
-            {categories.map((catname, {checked})=>{
-                return(
-                <div key={catname}>
-                    <label>
-                        <input
-                        type="checkbox"
-                        name={catname}
-                        value={formData.category}
-                        checked={checked}
-                        onChange={handleChangeCategory}
-                        />{catname}
-                    </label>
-                    </div>
-                )
-            })}
-        <br />
+                <h5><u> Pick your Goal Category</u></h5>
+                {categories.map((catname)=>{
+                    return(
+                        <div key={catname} className="radio-Btn">
+                            <label>
+                                <input 
+                                type="radio"
+                                name="category-name"
+                                value={catname}
+                                checked={formData.category === catname}
+                                onChange={handleChangeCategory}
+                                />{catname}
+                            </label>
+                        </div>
+                     )
+                })}
             </ul>
-            <input
-            type="text"
-            name="description"
-            value={formData.description}
-            placeholder="Briefly describe your goal"
-            onChange={(e)=>setFormData({...formData, description:e.target.value})}/>
+            <br />
 
-            <input
-            type="date"
-            name="deadline"
-            value={formData.deadline}
-            placeholder="Deadline to reach my goal"
-            onChange={(e)=>setFormData({...formData, deadline:e.target.value})}/>
+            <h5><u> Describe your goal and how you will reach it.</u></h5>
+                <input
+                    type="text"
+                    name="description"
+                    value={formData.description}
+                    placeholder="Briefly describe your goal"
+                    onChange={(e)=>setFormData({...formData, description:e.target.value})}/>
+            <br />
+            
+            <h5><u> When would you like this goal to be achieved by?</u></h5>
+                <input
+                    type="date"
+                    name="deadline"
+                    value={formData.deadline}
+                    placeholder="Deadline to reach my goal"
+                    onChange={(e)=>setFormData({...formData, deadline:e.target.value})}/>
+            
+            <br />
+            <br />
 
-            <button>Submit</button>
+            <button>Submit my New Goal !</button>
+
         </form>
+        </div>
     )
 }
 export default NewGoalForm;
