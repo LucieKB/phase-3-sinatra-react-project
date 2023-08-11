@@ -1,61 +1,79 @@
 import React, {useState} from "react";
 
 
-function NewGoalForm({onAddNewGoal, student}){
-
-console.log(student.student_id)
-
+function NewGoalForm({onAddNewGoal, student, id}){
+    const [isDisabled, setIsDisabled] = useState(false)
+    const [checked, setIsChecked] = useState(false)
+    
     const [formData, setFormData]=useState({
         category : (""),
         description : (""),
         deadline : (""),
-        achieved: ("Not yet")
-    })
+        achieved: (false),
+      })
+
+console.log(student)
 
     const categories = ["Ready", "Respectful", "Responsible", "Academic", "Other"]
 
+    function handleChangeCategory(e){
+        if(e.target.checked){
+            setIsChecked(checked => !checked)
+            setFormData({...formData, category:e.target.value})
+        }
+        setIsDisabled(true);
+    }
+
     function handleSubmit(e){
         e.preventDefault()
-    const goalData = {...formData}
+        setFormData({...formData})
     
-    
-    fetch ("http://localhost:9292/goals",{
-    method:"POST",
-    headers:{
-      "Content-Type": "application/json", 
-    },
-    body: JSON.stringify(goalData)
-})
-  .then((r)=>r.json())
-  .then ((newGoal)=>onAddNewGoal(newGoal));
+        fetch ("http://localhost:9292/goals",{
+            method:"POST",
+            headers:{
+             "Content-Type": "application/json", 
+             },
+             body: JSON.stringify(
+                 {category: formData.category,
+                 description: formData.description,
+                 deadline: formData.deadline,
+                 achieved: formData.achieved,
+                 student_id: id}
+                 )
+        })
+        .then(r=>r.json())
+        .then (newGoal=>onAddNewGoal(newGoal));
 
 
-  setFormData({
-    category : (""),
-    description : (""),
-    deadline : (""),
-    achieved: ("Not yet")
-    });
-}
+        setFormData({
+            category : (""),
+            description : (""),
+            deadline : (""),
+            achieved: (false),
+        });
+    }
 
 
-console.log(formData)
 
     return(
         <form onSubmit={handleSubmit}>
             <ul className = "category-list">
-                {categories.map(({category}, index)=>{
-                    <ul key={index}>
-                        <div>
-                            <input
-                            type="checkbox"
-                            name={category}
-                            value={formData.category}
-                            onChange={(e)=>setFormData({...formData, category:e.target.value})}
-                            />{category}
-                        </div>
-                        </ul>
-                })}
+            {categories.map((catname, {checked})=>{
+                return(
+                <div key={catname}>
+                    <label>
+                        <input
+                        type="checkbox"
+                        name={catname}
+                        value={formData.category}
+                        checked={checked}
+                        onChange={handleChangeCategory}
+                        />{catname}
+                    </label>
+                    </div>
+                )
+            })}
+        <br />
             </ul>
             <input
             type="text"

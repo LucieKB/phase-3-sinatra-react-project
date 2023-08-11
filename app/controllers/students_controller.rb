@@ -6,7 +6,7 @@ class StudentsController < ApplicationController
         students.to_json(include: :goals)
       end
       
-      get '/students/:id' do
+    get '/students/:id' do
         student = Student.find_by(id: params[:id])
         if student
         student.to_json(include: :goals)
@@ -15,12 +15,16 @@ class StudentsController < ApplicationController
         end
       end
 
-      delete '/students/:id' do
+    delete '/students/:id' do
         student = Student.find_by(id: params[:id])
         student.destroy
         student.to_json
       end
-
+    
+    post '/students' do
+        student = Student.create(params)
+        student.to_json(include: :goals)
+    end
 
 
     end
