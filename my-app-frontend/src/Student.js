@@ -34,7 +34,10 @@ function Student({students, setStudents}){
 
     const handleDeleteGoal= (deletedGoal) => {
         const updatedGoals = student.goals.filter((goal) => goal.id !== deletedGoal.id);
-        setStudent({...student, goals: updatedGoals});
+        const studentDeletedGoal = {...student, goals: updatedGoals}
+        setStudent(studentDeletedGoal);
+        const studentsDeletedGoal = students.map(s => s.id === studentDeletedGoal.id ? studentDeletedGoal : s)
+        setStudents(studentsDeletedGoal)
     } 
 
     const handleAddGoals = (newGoal) => {

@@ -1,13 +1,14 @@
 import React, {useState} from "react";
 import { Link } from "react-router-dom";
 import EditStudentGoals from "./EditStudentGoals";
-
+import { useNavigate } from "react-router-dom";
 
 
 
 function StudentGoals({goals, onDeleteGoal, onUpdateGoal}){ 
  const [isUpdating, setIsUpdating]=useState(false)
- const [onHover, setOnHover]=useState(false)  
+ const [onHover, setOnHover]=useState(false) 
+ const navigate = useNavigate() 
 
 
     const handleDeleteGoal = (goal) => { 
@@ -16,6 +17,7 @@ function StudentGoals({goals, onDeleteGoal, onUpdateGoal}){
         })
             .then((r) => r.json())
             .then((deletedGoal) => onDeleteGoal(deletedGoal));
+            navigate(`/students/`);
     }
 
    

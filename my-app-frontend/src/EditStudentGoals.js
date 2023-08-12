@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function EditStudentGoals({goal, onUpdateGoal, goalAchieved, setIsUpdating}){
+function EditStudentGoals({goal, onUpdateGoal, setIsUpdating}){
     const [goalValues, setGoalValues] = useState({
             category : goal.category,
             description : goal.description,

@@ -1,9 +1,5 @@
 class GoalsController < ApplicationController
 
-    # get '/goals' do
-    #     goals = Goal.all
-    #     goals.to_json
-    # end
 
     post '/goals' do
         goal= Goal.create(
